@@ -1,5 +1,6 @@
 package edu.logRecorder;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -14,6 +15,7 @@ public class LogReceiver implements Runnable{
 	
 	public LogReceiver(Properties props){
 		consumer = new KafkaConsumer<String, String>(props);
+		consumer.subscribe(Arrays.asList("time-Log"));
 	}
 	
 	public void setRecorder(ILogRecorder recorder){
