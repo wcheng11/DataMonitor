@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd"
+  >
+  
+  <!--Redis内存数据库连接池-->
+  <bean id="redisConnPool" class="edu.thss.monitor.base.redis.imp.RedisConnPool" init-method="init">
+   	<property name="ip" value="166.111.80.207" />
+   	<property name="maxActive" value="200" />
+   	<property name="maxIdle" value="50" />
+   	<property name="maxWait" value="1000" />
+   	<property name="testOnBorrow" value="false" />
+  </bean> 
+
+<bean id="redisDAO" class="edu.thss.monitor.base.redis.imp.RedisDAO">
+  	<property name="redisConnPool">
+   		<ref bean="redisConnPool" />
+  	</property>
+  </bean> 
+  
+</beans>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/META-INF/config.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!--实体管理器工厂，spring整合jpa的入口 -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="${jpa.persistence_unit_name}"></property>
+	</bean>
+
+
+	<!--unused <bean id="connectPool" class="edu.thss.monitor.base.dataaccess.imp.ConnectPool" 
+		scope="singleton" init-method="init" > <property name="driver_class" value="${laud.driver_class}" 
+		/> <property name="url" value="${laud.url}" /> <property name="username" 
+		value="${laud.username}" /> <property name="password" value="${laud.password}" 
+		/> <property name="min_size" value="${laud.min_size}" /> <property name="max_size" 
+		value="${laud.max_size}" /> <property name="increment" value="${laud.increment}" 
+		/> </bean> -->
+
+	<!--Redis内存数据库连接池 -->
+	<bean id="redisConnPool" class="edu.thss.monitor.base.redis.imp.RedisConnPool"
+		init-method="init">
+		<property name="ip" value="${redis.ip}" />
+		<property name="maxActive" value="${redis.maxActive}" />
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxWait" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+
+	<bean id="kmxconnectPool"
+		class="edu.thss.monitor.base.dataaccess.imp.CassandraConnection"
+		scope="singleton" init-method="init" destroy-method="close">
+		<property name="url" value="${kmx.url}" />
+		<property name="port" value="${kmx.port}" />
+	</bean>
+
+	<bean id="syncClientProxy" class="edu.thss.monitor.base.resource.sync.imp.SyncClientProxy"
+		scope="prototype">
+	</bean>
+
+	<!-- 平台服务器thrift连接池配置(日志与大部分订阅数据的目的地) -->
+	<bean id="platformThriftConnPool"
+		class="edu.thss.monitor.base.communication.thrift.pool.ThriftConnectionPool">
+		<property name="serviceIP" value="${mms.serviceIP}" />
+		<property name="servicePort" value="${mms.plt_service.port}" />
+		<property name="maxActive" value="${mms.plt_service.maxActive}" />
+		<property name="maxIdle" value="${mms.plt_service.maxIdle}" />
+		<property name="testOnBorrow" value="${mms.plt_service.testOnBorrow}" />
+		<property name="testOnReturn" value="${mms.plt_service.testOnReturn}" />
+		<property name="testWhileIdle" value="${mms.plt_service.testWhileIdle}" />
+	</bean>
+
+	<!-- 资源服务器信息 -->
+	<bean id="resourceServerInfo" class="edu.thss.monitor.base.resource.sync.SyncNodeInfo">
+		<property name="ip" value="${mms.serviceIP}" />
+		<property name="port" value="${mms.resource_service.port}" />
+		<property name="filterMask" value="${mms.filterMask}" />
+	</bean>
+	<bean id="syncServerProxy" class="edu.thss.monitor.base.resource.sync.imp.SyncServerProxy">
+		<property name="serverInfo" ref="resourceServerInfo"></property>
+	</bean>
+	<bean id="regionalRC" class="edu.thss.monitor.base.resource.RegionalRC"
+		init-method="register">
+		<property name="syncServerProxy" ref="syncServerProxy"></property>
+	</bean>
+	
+	<import resource="beans-dao.xml" />
+
+	<import resource="beans-service.xml" />
+
+	<bean id="boltObserverStarter"
+		class="edu.thss.monitor.rsp.topology.observe.ComponentObserverStarter"
+		init-method="start"> 
+		<property name="redisIP" value="${observer.redisIP}"></property>
+		<property name="redisPort" value="${observer.redisPort}"></property>
+		<property name="redisTableIndex" value="${observer.redisTableIndex}"></property>
+		<property name="infoKey" value="${observer.infoKey}"></property>
+		<property name="timeKey" value="${observer.timeKey}"></property>
+		<property name="receiveQueueSizeKey" value="${observer.receiveQueueSizeKey}"></property>
+		<property name="flushSeconds" value="${observer.flushSeconds}"></property>
+	</bean>
+
+	<!-- 日志记录设置 -->
+	<bean id="logRecord" class="edu.thss.monitor.base.logrecord.imp.LogRecord">
+		<property name="platformThriftConnPool" ref="platformThriftConnPool"></property>
+		<property name="isLocalRecord" value="${log.isLocalRecord}"></property>
+		<property name="ipFrontFilter" value="${log.ipFrontFilter}"></property>
+		<property name="logDAO" ref="logDAO"></property>
+	</bean>
+
+</beans>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	version="1.0">
+	<persistence-unit name="PU_RSP" transaction-type="RESOURCE_LOCAL">
+		<!-- 配置JPA规范实现的提供者，本项目采用Hibernate框架实现  -->
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<!-- 实体类  -->
+		<class>demo.framework.jpa.entity.TestEntity</class>
+		<class>edu.thss.monitor.pub.entity.AppLog</class>
+		<class>edu.thss.monitor.pub.entity.BasicConfig</class>
+		<class>edu.thss.monitor.pub.entity.BomChangeRec</class>
+		<class>edu.thss.monitor.pub.entity.Code</class>
+		<class>edu.thss.monitor.pub.entity.CustomerInfo</class>
+		<class>edu.thss.monitor.pub.entity.Device</class>
+		<class>edu.thss.monitor.pub.entity.DeviceSeries</class>
+		<class>edu.thss.monitor.pub.entity.ParaTreatClass</class>
+		<class>edu.thss.monitor.pub.entity.PerfoMonitor</class>
+		<class>edu.thss.monitor.pub.entity.PlatformManageLog</class>
+		<class>edu.thss.monitor.pub.entity.ProducerInfo</class>
+		<class>edu.thss.monitor.pub.entity.Protocol</class>
+		<class>edu.thss.monitor.pub.entity.ProTreatClass</class>
+		<class>edu.thss.monitor.pub.entity.RawData</class>
+		<class>edu.thss.monitor.pub.entity.RealtimeLog</class>
+		<class>edu.thss.monitor.pub.entity.ServiceLog</class>
+		<class>edu.thss.monitor.pub.entity.SubPlan</class>
+		<class>edu.thss.monitor.pub.entity.SynBom</class>
+		<class>edu.thss.monitor.pub.entity.SynConfig</class>
+		<class>edu.thss.monitor.pub.entity.Template</class>
+		<class>edu.thss.monitor.pub.entity.TemplatePara</class>
+		<class>edu.thss.monitor.pub.entity.TempTreClass</class>
+		<class>edu.thss.monitor.pub.entity.TopoComp</class>
+		<class>edu.thss.monitor.pub.entity.Topology</class>
+		<class>edu.thss.monitor.pub.entity.UserBill</class>
+		<class>edu.thss.monitor.pub.entity.WarnAlgClass</class>
+		<class>edu.thss.monitor.pub.entity.WarnPlan</class>			
+		<!-- 配置数据库连接  -->
+		<properties>
+		
+			<!-- hibernate的数据库连接配置（需要jar包：odbc） --> 
+			<property name="hibernate.connection.driver_class" value="oracle.jdbc.OracleDriver" />
+			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.168.15.212:1521:ptmro" />
+			<property name="hibernate.connection.username" value="monitor211" />
+			<property name="hibernate.connection.password" value="mn" />
+			<property name="hibernate.dialect" value="edu.thss.monitor.pub.util.MonitorOracleDialect" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.use_sql_comments" value="false" />
+			<property name="javax.persistence.validation.mode" value="none"/>
+			
+			<!-- 该配置用于JPA测试，开发时删去（每次加载时都会删除上一次的生成的表，然后根据你的model类再重新来生成新表） -->  
+			<!--  <property name="hibernate.hbm2ddl.auto" value="create" />   --> 
+		 
+		</properties>
+	</persistence-unit>
+	
+</persistence>

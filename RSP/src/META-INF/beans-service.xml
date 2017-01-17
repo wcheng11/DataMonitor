@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<!-- 数据接收 -->
+	<bean id="onlineReceiver" class="edu.thss.monitor.rsp.service.receive.imp.OnlineReceiver"
+		scope="prototype">
+	</bean>
+	<bean id="offlineReceiver"
+		class="edu.thss.monitor.rsp.service.receive.imp.OfflineReceiver"
+		scope="prototype">
+	</bean>
+
+	<!-- 数据存储 -->
+	<bean id="dataStore" class="edu.thss.monitor.rsp.service.store.imp.DataStore"
+		scope="prototype">
+		<property name="companyDataDAO">
+			<ref bean="kmxWriteDAO" />
+		</property>
+	</bean>
+
+	<!-- <bean id="timeCaculator" class="edu.thss.monitor.rsp.service.timer.imp.TimeCaculator"
+		scope="prototype"
+		init-method="init">
+		<property name="url" value="${timer.url}" />
+		<property name="port" value="${timer.port}" />
+		<property name="keyspace" value="${timer.keyspace}" />
+		<property name="column" value="${timer.column-name}" />
+	</bean> -->
+
+	<!-- 数据推送 -->
+	<bean id="pushService" class="edu.thss.monitor.rsp.service.push.imp.PushService"
+		scope="prototype">
+		<property name="platformThriftConnPool" ref="platformThriftConnPool"></property>
+	</bean>
+
+	<!-- 订阅判断 -->
+	<bean id="subscribeJudge"
+		class="edu.thss.monitor.rsp.service.subscribe.imp.SubscribeJudge"
+		scope="prototype"></bean>
+
+</beans>

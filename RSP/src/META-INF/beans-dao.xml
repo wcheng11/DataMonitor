@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="kmxWriteDAO" class="edu.thss.monitor.rsp.service.store.imp.KmxWriteDAO"
+		scope="prototype"
+		init-method="init">
+		<property name="connection">
+			<ref bean="kmxconnectPool" />
+		</property>
+	</bean>
+
+	<!--sanyDataDAO的配置 -->
+	<!-- <bean id="sanyDataDAO" class="edu.thss.monitor.rsp.service.store.imp.SanyDataDAO" 
+		scope="prototype"> <property name="connectPool"> <ref bean="connectPool" 
+		/> </property> <property name="columnfamily" value="sany"></property> <property 
+		name="keyspace" value="laudTest"></property> </bean> -->
+
+	<bean id="redisDAO" class="edu.thss.monitor.base.redis.imp.RedisDAO"
+		scope="prototype">
+		<property name="redisConnPool">
+			<ref bean="redisConnPool" />
+		</property>
+	</bean>
+
+	<bean id="logDAO" class="edu.thss.monitor.pub.dao.impl.LogDAO"
+		scope="prototype">
+		<property name="entityManagerFactory">
+			<ref bean="entityManagerFactory" />
+		</property>
+	</bean>
+
+	<bean id="subPlanDAO" class="edu.thss.monitor.pub.dao.impl.SubPlanDAO"
+		scope="prototype">
+		<property name="entityManagerFactory">
+			<ref bean="entityManagerFactory" />
+		</property>
+	</bean>
+
+	<!--测试使用 <bean id="baseDAO" class="edu.thss.monitor.base.dataaccess.imp.BaseDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="logDAO" class="edu.thss.monitor.pub.dao.impl.LogDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="basicConfigDAO" class="edu.thss.monitor.pub.dao.impl.BasicConfigDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="bOMChangeRecDAO" class="edu.thss.monitor.pub.dao.impl.BOMChangeRecDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="codeDAO" class="edu.thss.monitor.pub.dao.impl.CodeDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="customerInfoDAO" class="edu.thss.monitor.pub.dao.impl.CustomerInfoDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="deviceDAO" class="edu.thss.monitor.pub.dao.impl.DeviceDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="deviceSeriesDAO" class="edu.thss.monitor.pub.dao.impl.DeviceSeriesDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="producerInfoDAO" class="edu.thss.monitor.pub.dao.impl.ProducerInfoDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="protocolDAO" class="edu.thss.monitor.pub.dao.impl.ProtocolDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="proTreatClassDAO" class="edu.thss.monitor.pub.dao.impl.ProTreatClassDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="rawDataDAO" class="edu.thss.monitor.pub.dao.impl.RawDataDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="serviceDAO" class="edu.thss.monitor.pub.dao.impl.ServiceDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="servicePackDAO" class="edu.thss.monitor.pub.dao.impl.ServicePackDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="serverDAO" class="edu.thss.monitor.pub.dao.impl.ServerDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="softwareDAO" class="edu.thss.monitor.pub.dao.impl.SoftwareDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="synBomDAO" class="edu.thss.monitor.pub.dao.impl.SynBomDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="synConfigDAO" class="edu.thss.monitor.pub.dao.impl.SynConfigDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="templateDAO" class="edu.thss.monitor.pub.dao.impl.TemplateDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="templateParaDAO" class="edu.thss.monitor.pub.dao.impl.TemplateParaDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="tempTreClassDAO" class="edu.thss.monitor.pub.dao.impl.TempTreClassDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="topoCompDAO" class="edu.thss.monitor.pub.dao.impl.TopoCompDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="topologyDAO" class="edu.thss.monitor.pub.dao.impl.TopologyDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="userBillDAO" class="edu.thss.monitor.pub.dao.impl.UserBillDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="warnAlgClassDAO" class="edu.thss.monitor.pub.dao.impl.WarnAlgClassDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> <bean id="warnPlanDAO" class="edu.thss.monitor.pub.dao.impl.WarnPlanDAO" 
+		scope="prototype"> <property name="entityManagerFactory"> <ref bean="entityManagerFactory" 
+		/> </property> </bean> -->
+</beans>
