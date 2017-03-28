@@ -73,7 +73,6 @@ public class TempValueTransformer {
 		this.transData.setWorkStatusMap(workStatusMap);
 		this.transData.setCommonKey(parsedData.getCommonKey());
 		this.transData.setUniqueKey(parsedData.getUniqueKey());
-		
 //		System.out.print("数据转换完成..."+transData.getCommonKey().getParameterName());	
 		
 		return transData;

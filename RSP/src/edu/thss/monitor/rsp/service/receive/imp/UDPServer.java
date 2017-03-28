@@ -67,8 +67,8 @@ public class UDPServer implements Runnable{
 					//从数据报文中取出数据内容
 					byte[] data = new byte[packetLen];
 					System.arraycopy(receiveByte,0,data,0,packetLen);
-					RawDataPacket rawDataPacket = new RawDataPacket(new Date(new Date().getTime() - 8*3600000),dataPacket.getAddress().getHostAddress(),"port:"+PORT,data);
-					rawDataQueue.offer(rawDataPacket);
+//					RawDataPacket rawDataPacket = new RawDataPacket(new Date(new Date().getTime() - 8*3600000),dataPacket.getAddress().getHostAddress(),"port:"+PORT,data);
+//					rawDataQueue.offer(rawDataPacket);
 					packetLen = 0;// 循环接收
 				}
 			}

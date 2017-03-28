@@ -17,8 +17,6 @@ public class DataStore implements IDataStore{
 	//企业数据存储DAO
 	private ICompanyDataDAO companyDataDAO = null;
 	
-	private String DAO_CLASS_NAME = "daoClassName";
-	
 	//100个解析后的数据包进行一次批量存储
 	public int storeNum = 50;
 	public int parsedDataPacketNum = storeNum;
@@ -56,22 +54,17 @@ public class DataStore implements IDataStore{
 		List<WorkStatusData> workStatusDatas = new  ArrayList<WorkStatusData>();
 		
 		try {
-//			if (parsedDataPacketNum > 0) {
+			//3秒批量存一次数据
 			if (parsedDataPacketNum > 0 && new Date().getTime()-lastExecuteTime < 3000) {
 				workStatusDatas = companyDataDAO.getWorkStatusData(parsedDataPacket);
 				synchronized(batchStoreWorkStatuList){
-					for (WorkStatusData workStatusData : workStatusDatas) {
-						if(workStatusData.getWorkStatus().equals("800028")){
-							System.out.println("--DataStore--into--batch---" + workStatusData.getDataValue() + "---");
-						}
-						batchStoreWorkStatuList.add(workStatusData);
-					}
+					batchStoreWorkStatuList.addAll(workStatusDatas);
 				}
 				parsedDataPacketNum--;
 			} else {
 				workStatusDatas = companyDataDAO.getWorkStatusData(parsedDataPacket);
-				for (WorkStatusData workStatusData : workStatusDatas) {
-					batchStoreWorkStatuList.add(workStatusData);
+				synchronized(batchStoreWorkStatuList){
+					batchStoreWorkStatuList.addAll(workStatusDatas);
 				}
 				LogRecord.debug(LogConstant.LOG_FLAG_STORE+"开始存储工况数据");
 				boolean result = save();
@@ -85,10 +78,8 @@ public class DataStore implements IDataStore{
 			throw new RSPException(LogConstant.LOG_FLAG_STORE + "数据存储发生异常 ",e);
 		}
 	}
-
-	@Override
+	
 	public void saveDataPeriod() throws RSPException {
-		System.out.println(LogConstant.LOG_FLAG_STORE+"开始周期性存储工况数据");
 		try {
 			if (!save()){
 				System.out.println(LogConstant.LOG_FLAG_STORE+"无可存储工况");
@@ -96,18 +87,18 @@ public class DataStore implements IDataStore{
 			
 		} catch (RSPException e) {
 			throw new RSPException(LogConstant.LOG_FLAG_STORE + "数据存储发生异常 ",e);
-		}
-		System.out.println(LogConstant.LOG_FLAG_STORE+"周期性存储工况数据结束");		
+		}		
 	}
 
 	private boolean save() throws RSPException{
 		synchronized(batchStoreWorkStatuList){
-			lastExecuteTime = new Date().getTime();
 			if (batchStoreWorkStatuList.size() != 0) {
 				companyDataDAO.batchSave(batchStoreWorkStatuList);
 				batchStoreWorkStatuList.clear();
+				lastExecuteTime = new Date().getTime();
 				return true;
 			}else{
+				lastExecuteTime = new Date().getTime();
 				return false;
 			}
 		}
@@ -116,7 +107,6 @@ public class DataStore implements IDataStore{
 	
 	private void initSavePeriod(){
 		final DataStore self = this;
-		System.out.println(LogConstant.LOG_FLAG_STORE+"--INIT--SaverPeriod--");
 		periodSaver = new Thread(new Runnable() {
 			
 			@Override
@@ -125,10 +115,10 @@ public class DataStore implements IDataStore{
 				while(true){
 					try {
 						self.saveDataPeriod();
-						System.out.println(LogConstant.LOG_FLAG_STORE+"定时保存已开启");					
+//						System.out.println(LogConstant.LOG_FLAG_STORE+"定时保存开始");					
 					} catch (RSPException e) {
 						// TODO Auto-generated catch block
-						LogRecord.info(LogConstant.LOG_FLAG_STORE+"周期性存储工况数据产生异常");
+//						LogRecord.info(LogConstant.LOG_FLAG_STORE+"周期性存储工况数据产生异常");
 						e.printStackTrace();
 					}
 					try {

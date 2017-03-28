@@ -16,15 +16,16 @@ import edu.thss.monitor.pub.entity.service.RawDataPacket;
 import edu.thss.monitor.pub.exception.RSPException;
 import edu.thss.monitor.pub.sys.AppContext;
 import edu.thss.monitor.rsp.service.parse.process.ProtocolRecognizer;
+import edu.thss.monitor.rsp.topology.ComponentId;
 import edu.thss.monitor.rsp.topology.observe.ComponentObserver;
-import edu.thss.monitor.rsp.topology.observe.ObservableBolt;
+import edu.thss.monitor.rsp.topology.observe.TimeRecordBolt;
 
 /**
  * 协议识别的Bolt
  * @author zhuangxy
  * 2013-1-18
  */
-public class PRecogBolt extends ObservableBolt {
+public class PRecogBolt extends TimeRecordBolt {
 
 	private static final long serialVersionUID = -3664439853873159037L;
 
@@ -36,9 +37,10 @@ public class PRecogBolt extends ObservableBolt {
 
 	@Override
 	public void execute(Tuple input) {
-
 		RawDataPacket rawData = (RawDataPacket) input.getValue(0);
-		
+		@SuppressWarnings("unchecked")
+		String times = (String) input.getValue(input.size()-1);
+		times = registerTime(times, ComponentId.PRECOG_BOLT);
 		try {
 			pr = new ProtocolRecognizer();
 			//System.out.print("0-开始-----准备协议识别");			
@@ -55,13 +57,14 @@ public class PRecogBolt extends ObservableBolt {
 			_collector.fail(input);
 		}
 
-		_collector.emit(input,new Values(protocol, rawData));
+		_collector.emit(input,new Values(protocol, rawData, times));
 //		_collector.emit(new Values(protocol, rawData));		
 		
 		_collector.ack(input);
 		//System.out.print("协议识别发送给ParseBolt"+rawData.getPacketSource());		
 		//执行计数操作
 		super.count();
+		recordTime("0", ComponentId.PRECOG_BOLT);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -90,7 +93,7 @@ public class PRecogBolt extends ObservableBolt {
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 
-		declarer.declare(new Fields("protocol", "rawDataPacket"));
+		declarer.declare(new Fields("protocol", "rawDataPacket", "times"));
 	}
 
 }

@@ -4,6 +4,9 @@ import edu.logRecorder.entity.TimeLog;
 
 public interface ILogDAO {
 
-	public void recordTime(TimeLog timeLog);
+	public void recordTimeLog(TimeLog timeLog);
 	
+	public void recordTime(String [] times);
+	
+	public void log(String log);
 }

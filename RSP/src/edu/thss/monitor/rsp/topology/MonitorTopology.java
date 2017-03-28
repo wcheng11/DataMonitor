@@ -128,8 +128,9 @@ public class MonitorTopology {
         conf.registerSerialization(ParsedDataPacket.class);
         conf.registerSerialization(JudgeResult.class);
 //        conf.registerSerialization(FtpConfig.class);
-        conf.registerSerialization(SanyDataDAO.class);
-        conf.setDebug(true);
+//        conf.registerSerialization(SanyDataDAO.class);
+        conf.setMaxSpoutPending(10000);
+        conf.setDebug(false);
 		
         if(args!=null && args.length > 0) {
             conf.setNumWorkers(workerNum);

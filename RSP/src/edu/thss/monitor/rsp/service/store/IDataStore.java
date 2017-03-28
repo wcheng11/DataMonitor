@@ -24,10 +24,6 @@ public interface IDataStore {
 	 */
 	public void saveData(ParsedDataPacket parsedDataPacket) throws RSPException;
 
-	/**
-	 * 周期性的保存工况数据到数据库
-	 */
-	public void saveDataPeriod() throws RSPException;
 	
 	/**
 	 * 设置配置参数

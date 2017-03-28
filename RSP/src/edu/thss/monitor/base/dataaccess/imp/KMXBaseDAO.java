@@ -14,7 +14,7 @@ import com.sagittarius.write.Writer;
  */
 public class KMXBaseDAO {
 
-	private CassandraConnection connection;
+	private KMXConnection connection; 
 	
 	protected SagittariusClient client;
 	
@@ -25,18 +25,18 @@ public class KMXBaseDAO {
 	}
 	
 	protected Reader getReader(){
-		return client.getReader();
+		return null;
 	}
 	
 	protected Writer getWriter(){
 		return client.getWriter();
 	}
 	
-	public void setConnection(CassandraConnection connection){
+	public void setConnection(KMXConnection connection){
 		this.connection = connection;
 	}
 
-	public CassandraConnection getConnection() {
+	public KMXConnection getConnection() {
 		return connection;
 	}
 	

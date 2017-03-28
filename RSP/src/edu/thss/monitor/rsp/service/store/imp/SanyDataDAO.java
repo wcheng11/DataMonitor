@@ -63,7 +63,7 @@ public class SanyDataDAO extends LaUDBaseDAO implements ICompanyDataDAO{
 		
 		
 		//获取解析后报文中的时间戳
-		Date timeStamp = parsedDataPacket.getTimestamp();
+		Date timeStamp = new Date(parsedDataPacket.getTimestamp());
 		
 		//获取解析后报文中的流水号
 		Map<String, String> baseInfoList = parsedDataPacket.getBaseInfoMap();

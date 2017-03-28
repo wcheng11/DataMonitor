@@ -20,7 +20,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>tianyuan.kafka.ConsumerDemo.ConsumerDemo</mainClass>
+							<mainClass>edu.logRecorder.Launcher</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

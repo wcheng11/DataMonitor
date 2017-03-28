@@ -1,6 +1,7 @@
 package edu.thss.monitor.pub.entity.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class ParsedDataPacket implements Serializable {
 	/**
 	 * 时间戳
 	 */
-	private Date timestamp;
+	private long timestamp;
 
 	/**
 	 * 工况数据的发送设备
@@ -46,7 +47,7 @@ public class ParsedDataPacket implements Serializable {
 	 * 数据来源ip
 	 */
 	private String ip;
-
+	
 	/**
 	 * 数据报文基础信息
 	 * key = 模板参数（TemplatePara）的参数编号parameterID
@@ -61,11 +62,11 @@ public class ParsedDataPacket implements Serializable {
 	 */
 	private Map<String, String> workStatusMap;
 
-	public Date getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 
@@ -116,7 +117,15 @@ public class ParsedDataPacket implements Serializable {
 	public void setUniqueKey(TemplatePara uniqueKey) {
 		this.uniqueKey = uniqueKey;
 	}
-	
-	
 
+	public TransPacket getTransPacket(){
+		TransPacket packet = new TransPacket();
+		packet.setDeviceId(device.getDeviceID());
+		packet.setIp(ip);
+		packet.setBaseInfoMap(baseInfoMap);
+		packet.setTimestamp(timestamp);
+		packet.setWorkStatusMap(workStatusMap);
+		return packet;
+	}
+	
 }

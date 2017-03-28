@@ -33,7 +33,7 @@ public class LogDAO implements ILogDAO {
         }
 	}
 	
-	public void recordTime(TimeLog timeLog) {
+	public synchronized void recordTimeLog(TimeLog timeLog) {
 		// TODO Auto-generated method stub
 		try {
             PreparedStatement stmt = conn.prepareStatement("insert into TimeLog (id, process, start, end) values (?,?,?,?)");
@@ -50,6 +50,36 @@ public class LogDAO implements ILogDAO {
 	
 	protected void finalize()throws Throwable{
 		conn.close();
+	}
+
+	public synchronized void recordTime(String[] times) {
+		// TODO Auto-generated method stub
+		try {
+            PreparedStatement stmt = conn.prepareStatement("insert into Times (s1, s2, s3, s4, s5, s6, s7, s8, s9, s10 ,s11, s12) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+            for(int i = 1;i<=12;i++){
+            	stmt.setLong(i,-1);
+            }
+            for(String each:times){
+            	String args[] = each.split(":");
+            	stmt.setLong(Integer.parseInt(args[0]), Long.parseLong(args[1]));
+            }
+            stmt.executeUpdate();
+            stmt.close();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+	}
+
+	public synchronized void log(String log) {
+		// TODO Auto-generated method stub
+		try {
+            PreparedStatement stmt = conn.prepareStatement("insert into Log (log) values (?)");
+            stmt.setString(1, log);
+            stmt.executeUpdate();
+            stmt.close();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
 	}
 
 }

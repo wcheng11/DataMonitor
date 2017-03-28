@@ -1,5 +1,6 @@
 package edu.thss.monitor.rsp.topology.bolt;
 
+import java.util.Date;
 import java.util.Map;
 
 import backtype.storm.task.OutputCollector;
@@ -7,17 +8,20 @@ import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Tuple;
 import edu.thss.monitor.base.logrecord.imp.LogRecord;
+import edu.thss.monitor.base.timerecord.TimeLogger;
 import edu.thss.monitor.pub.LogConstant;
 import edu.thss.monitor.pub.entity.service.JudgeResult;
 import edu.thss.monitor.pub.sys.AppContext;
 import edu.thss.monitor.rsp.service.push.IPushService;
+import edu.thss.monitor.rsp.topology.ComponentId;
 import edu.thss.monitor.rsp.topology.observe.ComponentObserver;
 import edu.thss.monitor.rsp.topology.observe.ObservableBolt;
+import edu.thss.monitor.rsp.topology.observe.TimeRecordBolt;
 
 /**
  * 推送数据Bolt
  */
-public class PushBolt extends ObservableBolt {
+public class PushBolt extends TimeRecordBolt {
 
 	private static final long serialVersionUID = -9101503428236294465L;
 	
@@ -38,6 +42,7 @@ public class PushBolt extends ObservableBolt {
     
     @Override
     public void execute(Tuple tuple) {
+    	Date start = new Date();
     	LogRecord.info(LogConstant.LOG_FLAG_PUSH+"数据推送收到订阅判断结果!");
     	//获得前面参数
     	JudgeResult jr = (JudgeResult)tuple.getValue(0); 
@@ -54,6 +59,8 @@ public class PushBolt extends ObservableBolt {
 		}
 		//执行计数操作
 		super.count();
+		Date end = new Date();
+		TimeLogger.recordTime("0", ComponentId.PUSH_BOLT, start.getTime(), end.getTime());
     }
     
     @Override

@@ -13,9 +13,9 @@ public class LogReceiver implements Runnable{
 
 	ILogRecorder recorder;
 	
-	public LogReceiver(Properties props){
+	public LogReceiver(Properties props, String topic){
 		consumer = new KafkaConsumer<String, String>(props);
-		consumer.subscribe(Arrays.asList("time-Log"));
+		consumer.subscribe(Arrays.asList(topic));
 	}
 	
 	public void setRecorder(ILogRecorder recorder){

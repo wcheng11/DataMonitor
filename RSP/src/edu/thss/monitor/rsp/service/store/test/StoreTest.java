@@ -84,7 +84,7 @@ public class StoreTest {
 		packet.setBaseInfoMap(baseInfoList);
 		
 		Date timestamp = new Date();
-		packet.setTimestamp(timestamp);
+		packet.setTimestamp(timestamp.getTime());
 		
 		Map<String, String> workStatusList = new HashMap<String, String>();
 		workStatusList.put("33333", "33");

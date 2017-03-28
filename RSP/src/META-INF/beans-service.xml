@@ -20,6 +20,10 @@
 			<ref bean="kmxWriteDAO" />
 		</property>
 	</bean>
+	
+	<bean id="kafkaStore" class="edu.thss.monitor.rsp.service.store.imp.KafkaDataStore" 
+		scope="prototype">
+	</bean>
 
 	<!-- <bean id="timeCaculator" class="edu.thss.monitor.rsp.service.timer.imp.TimeCaculator"
 		scope="prototype"

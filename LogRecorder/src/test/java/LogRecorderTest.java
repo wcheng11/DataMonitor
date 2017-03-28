@@ -6,6 +6,8 @@ public class LogRecorderTest {
 		// TODO Auto-generated method stub
 		LogRecorder recorder = new LogRecorder();
 		recorder.log("1-a-177777777777-255555555");
+		
+//		recorder.time("1:15-2:16");
 	}
 
 }

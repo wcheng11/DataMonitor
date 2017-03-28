@@ -76,6 +76,8 @@ public class SubscribeJudge implements ISubscribeJudge {
 			Set<String> paramSet = (Set<String>)RegionalRC.getResource("subPlan2ParamID").getResourceItem(subPlanOID);
 			Iterator paramIterator = paramSet.iterator();
 			
+			Date timestamp = new Date(pdu.getTimestamp());
+			String serialNo = pdu.getBaseInfoMap().get("serialNo");
 			while(paramIterator.hasNext()){ //遍历该订阅方案的参数ID
 				String param = paramIterator.next().toString();
 				if(pdu.getWorkStatusMap().containsKey(param)){
@@ -84,8 +86,8 @@ public class SubscribeJudge implements ISubscribeJudge {
 					newWsd.setDevice(pdu.getDevice());
 					newWsd.setWorkStatus(param);
 					newWsd.setDataValue(pdu.getWorkStatusMap().get(param));
-					newWsd.setTimestamp(pdu.getTimestamp());
-					newWsd.setSerialNo(pdu.getBaseInfoMap().get("serialNo"));								
+					newWsd.setTimestamp(timestamp);
+					newWsd.setSerialNo(serialNo);								
 					list.add(newWsd);	
 //					System.out.println(newWsd.getDataValue());
 				}							

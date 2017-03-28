@@ -124,7 +124,7 @@ public class PacketParseTest {
 		rawData.setIp("testip");
 		rawData.setPacketData(data);
 		rawData.setPacketSource("port:5050");
-		rawData.setTimestamp(new Date());
+		rawData.setTimestamp(new Date().getTime());
 		
 		
 		try {

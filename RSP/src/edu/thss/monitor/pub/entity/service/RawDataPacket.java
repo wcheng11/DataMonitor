@@ -1,15 +1,18 @@
 package edu.thss.monitor.pub.entity.service;
 
 import java.io.Serializable;
-import java.util.Date;
 
-@SuppressWarnings("serial")
 public class RawDataPacket implements Serializable {
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -488894059909768006L;
+
+	/**
 	 * 时间戳
 	 */
-	private Date timestamp;
+	private long timestamp;
 	
 	/**
 	 * 数据来源
@@ -21,6 +24,7 @@ public class RawDataPacket implements Serializable {
 	 */
 	private String ip;
 	
+
 	/**
 	 * 未解析数据报文的数据
 	 */
@@ -28,7 +32,7 @@ public class RawDataPacket implements Serializable {
 	
 	public RawDataPacket(){}
 	
-	public RawDataPacket(Date timestamp, String ip,String packetSource, Object packetData) {
+	public RawDataPacket(long timestamp, String ip,String packetSource, byte[] packetData) {
 		super();
 		this.timestamp = timestamp;
 		this.ip = ip;
@@ -36,11 +40,11 @@ public class RawDataPacket implements Serializable {
 		this.packetData = packetData;
 	}
 
-	public Date getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 
@@ -67,5 +71,5 @@ public class RawDataPacket implements Serializable {
 	public void setPacketData(Object packetData) {
 		this.packetData = packetData;
 	}
-	
+
 }

@@ -102,64 +102,64 @@ public class CTY870FixTimerPara implements ITemplateParser {
 		System.out.print(res);	
 		
 		
+		int j=0;
+		int offset=0;
+		int jingdu=0;
+		int haiba=0;
+		String tempStr="1";		
+		
 	    // 把byte[]类型的数据转化为二进制的String字段
 		this.packetData = ByteConvertUtil.bytesToBinaryString((byte[]) data);
-
+//		System.out.print(String.format("信息为"+data.toString()));
+//		System.out.print(String.format("字符串为"+this.packetData));		
+		
 		if(InfotypeReg == 0x02){
 
 			LogRecord.debug(LogConstant.LOG_FLAG_PARSE + "正在根据模板解析报文...");
-//			System.out.print(LogConstant.LOG_FLAG_PARSE + "正在根据0x02模板解析报文...");
-			
-			int j=0;
-			int offset=0;
-			int jingdu=0;
-			int haiba=0;
-			String tempStr="1";
+			System.out.print(String.format("信息长度为:%d",this.packetData.length()));
 			
 			for (Tem2TemPara tem2TemPara : tem2TemParaList) {
 
 				tempPara = tem2TemPara.getTemplatePara();
 				tempParaValue = "";
-				if(tempPara.getParameterName()==""){
-					
-				}
 				int paraType = tempPara.getParameterType();
 				res =String.format("参数类型paraType：基础信息参数，或工况参数为：%d",paraType);
-//				System.out.print(res);	
+				System.out.print(res);	
 				
 				
 				// 基础信息参数，或工况参数，或保留字段参数
 				if (paraType == BASE_INFO_PARAMATER
-						|| paraType == WORK_STATUS_PARAMETER
-						|| paraType == NULL_PARAMETER) {
-
-					tempParaValue = this.getTempParaValue(tempPara, offset);
-					offset =offset+tempPara.getLength() ; // 偏移量
-					
-					res =String.format("偏移量offset为：%d",offset);
-//					System.out.print(res);
-					
+						|| paraType == WORK_STATUS_PARAMETER){
+									
 					if (paraType == BASE_INFO_PARAMATER) { // 基础信息参数
+						tempParaValue = this.getTempParaValue(tempPara, offset);
+						offset =offset+tempPara.getLength() ; // 偏移量								
 						baseInfoMap.put(tempPara.getParameterID(), tempParaValue);
-//						System.out.print("基础信息key:"+tempPara.getParameterID()+"基础信息Value:"+tempParaValue);					
+						System.out.print("基础信息key:"+tempPara.getParameterID()+"基础信息Value:"+tempParaValue);			
 						
 					} else { // 工况参数
 						
-//						System.out.print("参数选项位置对于工况值为:"+this.packetData.substring(184+j,184+j+1));
-												
+						if(tempStr.equals(this.packetData.substring(184+j,184+j+1))){
+							tempParaValue = this.getTempParaValue(tempPara, offset);
+							offset =offset+tempPara.getLength() ; // 偏移量						
+						}
+						
+						System.out.print("参数选项位置对于工况值为:"+this.packetData.substring(184+j,184+j+1));												
 						if(tempStr.equals(this.packetData.substring(184+j,184+j+1))){
 						workStatusMap.put(tempPara.getParameterID(), tempParaValue);
-//						System.out.print("工况信息key:"+tempPara.getParameterID()+"工况信息Value:"+tempParaValue);	
+						System.out.print("工况信息key:"+tempPara.getParameterID()+"工况信息Value:"+tempParaValue);	
 						}
 					}
+					res =String.format("偏移量offset为：%d",offset);
+					System.out.print(res);
 				}
 				jingdu++;
 				res =String.format("调整参数jingdu为：%d",jingdu);
-//				System.out.print(res);				
+				System.out.print(res);				
 				
 				haiba++;
 				res =String.format("调整参数haiba为：%d",haiba);
-//				System.out.print(res);					
+				System.out.print(res);					
 				
 				if(jingdu>22 && haiba<26){
 					j=1;
@@ -168,9 +168,45 @@ public class CTY870FixTimerPara implements ITemplateParser {
 					j++;
 				}
 				res =String.format("调整参数j为：%d",j);
-//				System.out.print(res);	
+				System.out.print(res);	
+				}
+			}else{
+				for (Tem2TemPara tem2TemPara : tem2TemParaList) {
+
+					tempPara = tem2TemPara.getTemplatePara();
+					tempParaValue = "";
+
+					int paraType = tempPara.getParameterType();
+					// 基础信息参数，或工况参数，或保留字段参数
+					if (paraType == BASE_INFO_PARAMATER
+							|| paraType == WORK_STATUS_PARAMETER
+							|| paraType == NULL_PARAMETER) {
+
+						tempParaValue = this.getTempParaValue(tempPara, offset);
+						offset =offset+tempPara.getLength() ; // 偏移量
+						
+						res =String.format("偏移量offset为：%d",offset);
+//						System.out.print(res);
+						
+						if (paraType == BASE_INFO_PARAMATER) { // 基础信息参数
+							baseInfoMap.put(tempPara.getParameterID(), tempParaValue);
+//							System.out.print("基础信息key:"+tempPara.getParameterID()+"基础信息Value:"+tempParaValue);					
+							
+						} else { // 工况参数
+							
+//							System.out.print("参数选项位置对于工况值为:"+this.packetData.substring(184+j,184+j+1));
+													
+							if(tempStr.equals(this.packetData.substring(184+j,184+j+1))){
+							workStatusMap.put(tempPara.getParameterID(), tempParaValue);
+//							System.out.print("工况信息key:"+tempPara.getParameterID()+"工况信息Value:"+tempParaValue);	
+							}
+						}
+					}
+					
+					
 				}
 			}
+
 		
 
 		

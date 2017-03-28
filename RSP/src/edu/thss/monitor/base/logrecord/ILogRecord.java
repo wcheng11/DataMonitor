@@ -7,4 +7,6 @@ package edu.thss.monitor.base.logrecord;
  */
 public interface ILogRecord {
 	
+	public boolean log(String logType, String log);
+	
 }

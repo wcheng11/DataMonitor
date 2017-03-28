@@ -1,6 +1,7 @@
 package edu.thss.monitor.rsp.topology.bolt;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,21 +13,24 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import edu.thss.monitor.base.logrecord.imp.LogRecord;
 import edu.thss.monitor.base.resource.RegionalRC;
+import edu.thss.monitor.base.timerecord.TimeLogger;
 import edu.thss.monitor.pub.LogConstant;
 import edu.thss.monitor.pub.entity.service.JudgeResult;
 import edu.thss.monitor.pub.entity.service.ParsedDataPacket;
 import edu.thss.monitor.pub.exception.RSPException;
 import edu.thss.monitor.pub.sys.AppContext;
 import edu.thss.monitor.rsp.service.subscribe.ISubscribeJudge;
+import edu.thss.monitor.rsp.topology.ComponentId;
 import edu.thss.monitor.rsp.topology.observe.ComponentObserver;
 import edu.thss.monitor.rsp.topology.observe.ObservableBolt;
+import edu.thss.monitor.rsp.topology.observe.TimeRecordBolt;
 
 /**
  * 订阅判断bolt
  * @author lihubin
  *
  */
-public class SubscribeJudgeBolt extends ObservableBolt{
+public class SubscribeJudgeBolt extends TimeRecordBolt{
 	
 	private static final long serialVersionUID = 8412304705382477989L;
 
@@ -38,7 +42,7 @@ public class SubscribeJudgeBolt extends ObservableBolt{
 	@Override
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
-
+		
 		_collector = collector;
 		subscribeJudge = (ISubscribeJudge)AppContext.getSpringContext().getBean("subscribeJudge");
 
@@ -57,7 +61,7 @@ public class SubscribeJudgeBolt extends ObservableBolt{
 
 	@Override
 	public void execute(Tuple input) {
-		
+		Date start = new Date();
 		System.out.print("获取设备识别Bolt后的数据");
 		ParsedDataPacket parsedDataPacket = (ParsedDataPacket)input.getValue(0);
 		List<JudgeResult>  judgeResults = null;
@@ -72,6 +76,8 @@ public class SubscribeJudgeBolt extends ObservableBolt{
 			System.out.print("订阅判断结果数："+judgeResults.size());
 			
 			_collector.ack(input);//处理成功
+			Date end = new Date();
+			TimeLogger.recordTime(parsedDataPacket.getDevice().getDeviceID(), ComponentId.SUB_JUDGE_BOLT, start.getTime(), end.getTime());
 			
 		} catch (ClassCastException e) {
 			new RSPException(LogConstant.LOG_FLAG_SUBSCRIBE+"SubscribeJudgeBolt执行SubscribeJudge类的getSubscribeJudge()方法发生异常",e);

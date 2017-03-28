@@ -1,0 +1,8 @@
+option java_package = "ty.pub";  
+option java_outer_classname = "ProtoPacket"; 
+message RawPacket  {  
+	required string ip = 1;
+	required string packetSource = 2;         
+	required int64 timestamp = 3;  
+	required bytes packetData = 4; 
+}

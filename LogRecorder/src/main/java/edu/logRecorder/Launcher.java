@@ -25,10 +25,22 @@ public class Launcher {
 			e.printStackTrace();
 		}
 		
-		LogReceiver receiver = new LogReceiver(props);
-		receiver.setRecorder(new LogRecorder());
+		LogRecorder recorder = new LogRecorder();
+		
+		LogReceiver receiver = new LogReceiver(props, "time-Log");
+		receiver.setRecorder(recorder);
 		Thread thread = new Thread(receiver);
 		thread.start();
+		
+		TimeReceiver timeReceiver = new TimeReceiver(props, "times");
+		timeReceiver.setRecorder(recorder);
+		Thread thread2 = new Thread(timeReceiver);
+		thread2.start();
+		
+		DataReceiver dataReceiver = new DataReceiver(props, "data-log");
+		dataReceiver.setRecorder(recorder);
+		Thread thread3 = new Thread(dataReceiver);
+		thread3.start();
 	}
 
 }

@@ -1,5 +1,7 @@
 package edu.thss.monitor.rsp.topology.bolt;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import backtype.storm.task.OutputCollector;
@@ -10,6 +12,7 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import edu.thss.monitor.base.logrecord.imp.LogRecord;
 import edu.thss.monitor.base.resource.RegionalRC;
+import edu.thss.monitor.base.timerecord.TimeLogger;
 import edu.thss.monitor.pub.LogConstant;
 import edu.thss.monitor.pub.entity.Protocol;
 import edu.thss.monitor.pub.entity.service.ParsedDataPacket;
@@ -17,15 +20,17 @@ import edu.thss.monitor.pub.entity.service.RawDataPacket;
 import edu.thss.monitor.pub.exception.RSPException;
 import edu.thss.monitor.pub.sys.AppContext;
 import edu.thss.monitor.rsp.service.parse.process.ReusablePacketParse;
+import edu.thss.monitor.rsp.topology.ComponentId;
 import edu.thss.monitor.rsp.topology.observe.ComponentObserver;
 import edu.thss.monitor.rsp.topology.observe.ObservableBolt;
+import edu.thss.monitor.rsp.topology.observe.TimeRecordBolt;
 
 /**
  * 报文解析Bolt
  * @author zhuangxy
  * 2013-1-18
  */
-public class ParseBolt extends ObservableBolt {
+public class ParseBolt extends TimeRecordBolt {
 
 	private static final long serialVersionUID = -8580235222054380988L;
 
@@ -44,10 +49,12 @@ public class ParseBolt extends ObservableBolt {
 	public void execute(Tuple input) {
 	
 		try {
-//			System.out.print("接收协议识别的输入数据--------");			
+//			System.out.print("接收协议识别的输入数据--------");	
 			protocol = (Protocol) input.getValue(0);
 			rawData = (RawDataPacket) input.getValue(1);
-			
+			@SuppressWarnings("unchecked")
+			String times = (String) input.getValue(input.size()-1);
+			times = registerTime(times, ComponentId.PARSE_BOLT);
 //			System.out.print("输入数据为：协议"+protocol.getProtocalName()+"报文来源"+rawData.getPacketSource());	
 			
 			
@@ -60,10 +67,10 @@ public class ParseBolt extends ObservableBolt {
 			
 			this.parsedData.setTimestamp(rawData.getTimestamp());
 			this.parsedData.setIp(rawData.getIp());
-			
 
-			_collector.emit(input,new Values(this.parsedData));
+			_collector.emit(input, new Values(this.parsedData,times));
 			_collector.ack(input);
+			recordTime("0", ComponentId.PARSE_BOLT);
 		} catch (RSPException e) {
 			// 发生异常,不作处理，只记录日志
 //			System.out.print("----------处理异常11111---");		
@@ -110,7 +117,7 @@ public class ParseBolt extends ObservableBolt {
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 
-		declarer.declare(new Fields("parsedDataPacket"));
+		declarer.declare(new Fields("parsedDataPacket", "times"));
 	}
 
 }

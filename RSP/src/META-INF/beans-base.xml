@@ -5,7 +5,7 @@
   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		class="edu.thss.monitor.pub.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:/META-INF/config.properties</value>
@@ -39,7 +39,7 @@
 	</bean>
 
 	<bean id="kmxconnectPool"
-		class="edu.thss.monitor.base.dataaccess.imp.CassandraConnection"
+		class="edu.thss.monitor.base.dataaccess.imp.KMXConnection"
 		scope="singleton" init-method="init" destroy-method="close">
 		<property name="url" value="${kmx.url}" />
 		<property name="port" value="${kmx.port}" />
@@ -98,5 +98,7 @@
 		<property name="ipFrontFilter" value="${log.ipFrontFilter}"></property>
 		<property name="logDAO" ref="logDAO"></property>
 	</bean>
+
+	
 
 </beans>

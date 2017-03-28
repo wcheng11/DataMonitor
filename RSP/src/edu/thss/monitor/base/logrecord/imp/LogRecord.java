@@ -29,7 +29,7 @@ import edu.thss.monitor.pub.util.MachineEnvUtil;
  * @author lihubin
  *
  */
-public class LogRecord implements ILogRecord{
+public class LogRecord{
 	
 	//日志记录器
 	private static org.apache.commons.logging.Log logger = LogFactory.getLog(LogRecord.class);

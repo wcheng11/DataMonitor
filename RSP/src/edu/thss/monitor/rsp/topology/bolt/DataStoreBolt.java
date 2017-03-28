@@ -14,14 +14,15 @@ import edu.thss.monitor.pub.entity.service.ParsedDataPacket;
 import edu.thss.monitor.pub.exception.RSPException;
 import edu.thss.monitor.pub.sys.AppContext;
 import edu.thss.monitor.rsp.service.store.IDataStore;
+import edu.thss.monitor.rsp.topology.ComponentId;
 import edu.thss.monitor.rsp.topology.observe.ComponentObserver;
-import edu.thss.monitor.rsp.topology.observe.ObservableBolt;
+import edu.thss.monitor.rsp.topology.observe.TimeRecordBolt;
 
 /**
  * 数据存储bolt
  * @author lihubin
  */
-public class DataStoreBolt extends ObservableBolt{
+public class DataStoreBolt extends TimeRecordBolt{
 
 	private static final long serialVersionUID = 7657189031026301298L;
 
@@ -56,7 +57,7 @@ public class DataStoreBolt extends ObservableBolt{
 		LogRecord.setSource(""+context.getThisWorkerPort());
 		_collector = collector;
 		try {
-			dataStore = (IDataStore)AppContext.getSpringContext().getBean("dataStore");
+			dataStore = (IDataStore)AppContext.getSpringContext().getBean("kafkaStore");
 			dataStore.setConfig(param);
 		} catch (Exception e) {
 			new RSPException("数据存储Bolt初始化失败!",e);
@@ -85,41 +86,20 @@ public class DataStoreBolt extends ObservableBolt{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(Tuple input) {
-		
+		@SuppressWarnings("unchecked")
+		String times = (String) input.getValue(input.size()-1);
+		times = registerTime(times, ComponentId.DATA_STORE_BOLT);
 		//获取解析后的数据包
 		ParsedDataPacket parsedDataPacket = (ParsedDataPacket)input.getValue(0);
-		
 		//存储数据
-		try {
-			if(dataStore == null){
-				System.out.println("DataStore nullpointer error!!!");
-			}else if(parsedDataPacket == null){
-				System.out.println("parsedDataPacket nullpointer error!!!");
-			}
+		try {			
 			if(parsedDataPacket.getDevice().getDeviceID() != null){
 				dataStore.saveData(parsedDataPacket);
 			}
 			_collector.ack(input);//处理成功
 			
-//			System.out.println(parsedDataPacket.getWorkStatusMap().get("281"));
-//			System.out.println(parsedDataPacket.getWorkStatusMap().get("282"));
-//			if(parsedDataPacket.getWorkStatusMap().get("281").equals("1.0"))//1110100000000011
-//			{
-//				countTest1++;
-//				storeTag = 1;
-//			}
-//			if(parsedDataPacket.getWorkStatusMap().get("281").equals("10.0"))//0001000000100111
-//			{
-//				countTest10++;
-//				storeTag = 10;
-//			}
-////			if (storeTag != (Integer)input.getValue(1))
-////			{
-////				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!StoreBolt:"+(Integer)input.getValue(1)+" to "+storeTag+"!!!!!!!!!!!!!!!!!!");
-////				//LogRecord.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!StoreBolt:"+(Integer)input.getValue(1)+" to "+storeTag+"!!!!!!!!!!!!!!!!!!");
-////			}
-//			System.out.println("----Store(1)----"+countTest1);
-//			System.out.println("----Store(10)----"+countTest10);
+			recordTime(parsedDataPacket.getDevice().getDeviceID(), ComponentId.DATA_STORE_BOLT);
+			flushAllTimes(times);
 			
 		} catch (RSPException e) {
 			

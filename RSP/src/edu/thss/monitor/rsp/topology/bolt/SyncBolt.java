@@ -1,5 +1,6 @@
 package edu.thss.monitor.rsp.topology.bolt;
 
+import java.util.Date;
 import java.util.Map;
 
 import backtype.storm.task.OutputCollector;
@@ -8,14 +9,17 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Tuple;
 import edu.thss.monitor.base.logrecord.imp.LogRecord;
 import edu.thss.monitor.base.resource.RegionalRC;
+import edu.thss.monitor.base.timerecord.TimeLogger;
 import edu.thss.monitor.pub.entity.service.ParsedDataPacket;
 import edu.thss.monitor.pub.exception.RSPException;
 import edu.thss.monitor.pub.sys.AppContext;
 import edu.thss.monitor.rsp.service.consistency.BOMSyncManager;
+import edu.thss.monitor.rsp.topology.ComponentId;
 import edu.thss.monitor.rsp.topology.observe.ComponentObserver;
 import edu.thss.monitor.rsp.topology.observe.ObservableBolt;
+import edu.thss.monitor.rsp.topology.observe.TimeRecordBolt;
 
-public class SyncBolt extends ObservableBolt {
+public class SyncBolt extends TimeRecordBolt {
 
 	private static final long serialVersionUID = 5545947661285829507L;
 
@@ -27,7 +31,7 @@ public class SyncBolt extends ObservableBolt {
 	
 	@Override
 	public void execute(Tuple input) {
-		
+		Date start = new Date();
 		parsedData = (ParsedDataPacket) input.getValue(0);
 		
 		try {
@@ -39,6 +43,8 @@ public class SyncBolt extends ObservableBolt {
 		}
 		//执行计数操作
 		super.count();
+		Date end = new Date();
+		TimeLogger.recordTime(parsedData.getDevice().getDeviceID(), ComponentId.SYNC_BOLT, start.getTime(), end.getTime());
 	}
 
 	@SuppressWarnings("unchecked")

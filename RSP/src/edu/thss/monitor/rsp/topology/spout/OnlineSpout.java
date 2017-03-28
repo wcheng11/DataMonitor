@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.cassandra.thrift.Cassandra.system_add_column_family_args;
 import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -19,14 +18,15 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 import edu.thss.monitor.base.logrecord.imp.LogRecord;
+import edu.thss.monitor.base.timerecord.TimeLogger;
 import edu.thss.monitor.pub.LogConstant;
 import edu.thss.monitor.pub.entity.service.RawDataPacket;
 import edu.thss.monitor.pub.sys.AppContext;
 import edu.thss.monitor.rsp.service.receive.IOnlineReceiver;
 import edu.thss.monitor.rsp.service.receive.IReceivable;
 import edu.thss.monitor.rsp.service.receive.OnlineReceiver;
-import edu.thss.monitor.rsp.service.receive.imp.UDPServer;
 import edu.thss.monitor.rsp.service.receive.util.RawDataPacket2;
+import edu.thss.monitor.rsp.topology.ComponentId;
 import edu.thss.monitor.rsp.topology.observe.ComponentObserver;
 import edu.thss.monitor.rsp.topology.observe.ObservableSpout;
 
@@ -35,7 +35,7 @@ import edu.thss.monitor.rsp.topology.observe.ObservableSpout;
  * @author yangtao
  */
 public class OnlineSpout extends ObservableSpout implements IReceivable{
-
+	
 	private static final long serialVersionUID = -4295899123976695527L;
 
 	SpoutOutputCollector _collector;
@@ -121,7 +121,7 @@ public class OnlineSpout extends ObservableSpout implements IReceivable{
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		//发送数据格式
-		declarer.declare(new Fields("data"));
+		declarer.declare(new Fields("data", "times"));
 	}
 
 	/**
@@ -199,14 +199,17 @@ public class OnlineSpout extends ObservableSpout implements IReceivable{
 //		    	    LogRecord.info(sb.toString());
 //		        }
 //		    	System.out.println(rawDataPacket2.getIp());
-		    	
+		    	Date start = new Date();
 		    	RawDataPacket rawDataPacket = new RawDataPacket();
 		    	rawDataPacket.setIp(rawDataPacket2.getIp());
 		    	rawDataPacket.setPacketSource(rawDataPacket2.getPacketSource());
-		    	rawDataPacket.setTimestamp(new Date(rawDataPacket2.getTimestamp()));
+		    	rawDataPacket.setTimestamp(rawDataPacket2.getTimestamp());
 		    	rawDataPacket.setPacketData(rawDataPacket2.getPacketData());
 		    	
-		        _collector.emit(new Values(rawDataPacket));
+		    	String times = "" + ComponentId.ONLINE_SPOUT + ":" + start.getTime() + "-";
+		        _collector.emit(new Values(rawDataPacket, times));
+		        Date end = new Date();
+		        TimeLogger.recordTime("0", ComponentId.ONLINE_SPOUT, start.getTime(), end.getTime());
 		        i++;
 		        if(i%100==0){
 		        	super.count(i);

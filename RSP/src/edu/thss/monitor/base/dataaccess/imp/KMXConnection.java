@@ -8,9 +8,9 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CassandraConnection {
+public class KMXConnection {
 
-    private final Logger logger = LoggerFactory.getLogger(CassandraConnection.class);
+    private final Logger logger = LoggerFactory.getLogger(KMXConnection.class);
     private String url;
     private int port;
     private String[] cassandraNodes = new String[]{"192.168.10.69","192.168.10.71","192.168.10.72"};
